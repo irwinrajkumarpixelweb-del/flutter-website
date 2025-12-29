@@ -1,0 +1,51 @@
+import 'package:flutter/material.dart';
+import 'package:my_portfolio/pages/home_page.dart';
+import 'package:my_portfolio/styles/theme.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: kCustomTheme,
+      title: 'MASL Fantasy iFutbol',
+      home: const HomePage(),
+    );
+  }
+}
+
+
+// import 'dart:html' as html;
+// import 'package:flutter/material.dart';
+// import 'package:my_portfolio/pages/home_page.dart';
+// import 'package:my_portfolio/styles/theme.dart';
+//
+// void main() {
+//   const bool redirectToLocalhost = true;
+//
+//   if (redirectToLocalhost) {
+//     html.window.location.replace('http://localhost:3000');
+//   } else {
+//     runApp(const MyApp());
+//   }
+// }
+//
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       theme: kCustomTheme,
+//       title: 'MASL Fantasy iFutbol',
+//       home: const HomePage(),
+//     );
+//   }
+// }
