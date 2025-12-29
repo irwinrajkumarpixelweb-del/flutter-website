@@ -78,6 +78,7 @@ class _HomePageState extends State<HomePage> {
 
                 const SizedBox(height: 20),
 
+
                 // Intro video section
                 const HomeVideoSection(),
 
