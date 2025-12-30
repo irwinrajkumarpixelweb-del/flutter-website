@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
 import '../constants/colors.dart';
@@ -7,8 +8,7 @@ import 'animated_section.dart';
 class HomeVideoSection extends StatefulWidget {
   const HomeVideoSection({
     super.key,
-    this.url='assets/videos/user2admin.mp4',
-    // this.url = 'https://flutter.github.io/assets-for-api-docs/assets/videos/user2admin.mp4',
+    this.url = 'assets/videos/fantacy_football.mp4',
     this.autoplay = false,
     this.loop = true,
     this.isAsset = false,
@@ -26,6 +26,7 @@ class HomeVideoSection extends StatefulWidget {
 class _HomeVideoSectionState extends State<HomeVideoSection> {
   late final VideoPlayerController _controller;
   Future<void>? _init;
+  bool _isFullscreen = false;
 
   @override
   void initState() {
@@ -33,6 +34,7 @@ class _HomeVideoSectionState extends State<HomeVideoSection> {
     _controller = widget.isAsset
         ? VideoPlayerController.asset(widget.url)
         : VideoPlayerController.networkUrl(Uri.parse(widget.url));
+
     _init = _controller.initialize().then((_) async {
       await _controller.setLooping(widget.loop);
       if (widget.autoplay) {
@@ -44,128 +46,164 @@ class _HomeVideoSectionState extends State<HomeVideoSection> {
 
   @override
   void dispose() {
+    _exitFullscreen();
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return AnimatedSection(
       child: Container(
-        width: screenWidth,
+        height: _isFullscreen ? MediaQuery.of(context).size.height : 500,
+        width: double.infinity,
         padding: const EdgeInsets.fromLTRB(25, 20, 25, 40),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1000),
-            child: FutureBuilder<void>(
-              future: _init,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return Container(
-                    height: 280,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: CustomColor.bgLight2,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const SizedBox(
-                      width: 28,
-                      height: 28,
-                      child: CircularProgressIndicator(strokeWidth: 3),
-                    ),
-                  );
-                }
+        child: FutureBuilder<void>(
+          future: _init,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-                if (_controller.value.hasError) {
-                  return Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: CustomColor.bgLight2,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      'Video error: ${_controller.value.errorDescription}',
-                      style: const TextStyle(color: CustomColor.whitePrimary),
-                    ),
-                  );
-                }
+            final aspectRatio =
+            _controller.value.isInitialized
+                ? _controller.value.aspectRatio
+                : 16 / 9;
 
-                final aspect = _controller.value.isInitialized
-                    ? _controller.value.aspectRatio
-                    : 16 / 9;
-
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      AspectRatio(
-                        aspectRatio: aspect,
-                        child: VideoPlayer(_controller),
-                      ),
-
-                      // Play/Pause overlay
-                      Positioned.fill(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: _toggle,
-                            child: AnimatedOpacity(
-                              opacity: _controller.value.isPlaying ? 0.0 : 0.9,
-                              duration: const Duration(milliseconds: 200),
-                              child: Container(
-                                color: Colors.black45,
-                                child: const Icon(
-                                  Icons.play_circle_fill,
-                                  size: 72,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Bottom-right control button
-                      Positioned(
-                        right: 8,
-                        bottom: 8,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Colors.black54,
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          child: IconButton(
-                            onPressed: _toggle,
-                            color: Colors.white,
-                            icon: Icon(
-                              _controller.value.isPlaying
-                                  ? Icons.pause
-                                  : Icons.play_arrow,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  AspectRatio(
+                    aspectRatio: aspectRatio,
+                    child: VideoPlayer(_controller),
                   ),
-                );
-              },
-            ),
-          ),
+
+                  /// Play/Pause Overlay
+                  Positioned.fill(
+                    child: GestureDetector(
+                      onTap: _togglePlay,
+                      child: AnimatedOpacity(
+                        opacity: _controller.value.isPlaying ? 0 : 0.9,
+                        duration: const Duration(milliseconds: 200),
+                        child: Container(
+                          color: Colors.black45,
+                          child: const Icon(
+                            Icons.play_circle_fill,
+                            size: 72,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  /// CENTER CONTROLS (Backward / Play / Forward)
+                  Positioned(
+                    bottom: 20,
+                    child: Row(
+                      children: [
+                        _controlButton(
+                          icon: Icons.replay_10,
+                          onTap: _seekBackward,
+                        ),
+                        const SizedBox(width: 12),
+                        _controlButton(
+                          icon: _controller.value.isPlaying
+                              ? Icons.pause
+                              : Icons.play_arrow,
+                          onTap: _togglePlay,
+                        ),
+                        const SizedBox(width: 12),
+                        _controlButton(
+                          icon: Icons.forward_10,
+                          onTap: _seekForward,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  /// FULLSCREEN BUTTON
+                  Positioned(
+                    right: 10,
+                    top: 10,
+                    child: _controlButton(
+                      icon: _isFullscreen
+                          ? Icons.fullscreen_exit
+                          : Icons.fullscreen,
+                      onTap: _toggleFullscreen,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
-  void _toggle() {
+  /// ---------- CONTROLS ----------
+
+  Widget _controlButton({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: const BoxDecoration(
+          color: Colors.black54,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: Colors.white, size: 28),
+      ),
+    );
+  }
+
+  void _togglePlay() {
     if (!_controller.value.isInitialized) return;
-    if (_controller.value.isPlaying) {
-      _controller.pause();
-    } else {
-      _controller.play();
-    }
+    _controller.value.isPlaying ? _controller.pause() : _controller.play();
     setState(() {});
   }
+
+  void _seekForward() {
+    final current = _controller.value.position;
+    _controller.seekTo(current + const Duration(seconds: 10));
+  }
+
+  void _seekBackward() {
+    final current = _controller.value.position;
+    _controller.seekTo(
+      current - const Duration(seconds: 10),
+    );
+  }
+
+  /// ---------- FULLSCREEN (LANDSCAPE) ----------
+
+  void _toggleFullscreen() {
+    _isFullscreen ? _exitFullscreen() : _enterFullscreen();
+    setState(() {});
+  }
+
+  void _enterFullscreen() {
+    _isFullscreen = true;
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
+  void _exitFullscreen() {
+    _isFullscreen = false;
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+  }
 }
+
