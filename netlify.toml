@@ -6,4 +6,4 @@ command = "flutter build web --release"
 package = "netlify-plugin-flutter"
 
 [plugins.inputs]
-flutter_version = "stable"
+channel = "stable"
