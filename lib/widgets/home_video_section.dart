@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
@@ -55,7 +56,10 @@ class _HomeVideoSectionState extends State<HomeVideoSection> {
   Widget build(BuildContext context) {
     return AnimatedSection(
       child: Container(
-        height: _isFullscreen ? MediaQuery.of(context).size.height : 500,
+        height: _isFullscreen ? MediaQuery
+            .of(context)
+            .size
+            .height : 500,
         width: double.infinity,
         padding: const EdgeInsets.fromLTRB(25, 20, 25, 40),
         child: FutureBuilder<void>(
@@ -132,7 +136,7 @@ class _HomeVideoSectionState extends State<HomeVideoSection> {
                       icon: _isFullscreen
                           ? Icons.fullscreen_exit
                           : Icons.fullscreen,
-                      onTap: _toggleFullscreen,
+                      onTap: _enterFullscreen,
                     ),
                   ),
                 ],
@@ -183,27 +187,49 @@ class _HomeVideoSectionState extends State<HomeVideoSection> {
   }
 
   /// ---------- FULLSCREEN (LANDSCAPE) ----------
-
-  void _toggleFullscreen() {
-    _isFullscreen ? _exitFullscreen() : _enterFullscreen();
-    setState(() {});
-  }
-
   void _enterFullscreen() {
     _isFullscreen = true;
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
+
+    if (!kIsWeb) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    }
   }
 
   void _exitFullscreen() {
     _isFullscreen = false;
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-  }
-}
 
+    if (!kIsWeb) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
+    }
+  }
+
+//   void _toggleFullscreen() {
+//     _isFullscreen ? _exitFullscreen() : _enterFullscreen();
+//     setState(() {});
+//   }
+//
+//   void _enterFullscreen() {
+//     _isFullscreen = true;
+//     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+//     SystemChrome.setPreferredOrientations([
+//       DeviceOrientation.landscapeLeft,
+//       DeviceOrientation.landscapeRight,
+//     ]);
+//   }
+//
+//   void _exitFullscreen() {
+//     _isFullscreen = false;
+//     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+//     SystemChrome.setPreferredOrientations([
+//       DeviceOrientation.portraitUp,
+//     ]);
+//   }
+// }
+}
