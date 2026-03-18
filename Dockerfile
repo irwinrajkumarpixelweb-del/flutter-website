@@ -2,19 +2,15 @@ FROM ghcr.io/cirruslabs/flutter:stable
 
 WORKDIR /app
 
-# ✅ Set Java 17
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-ENV PATH=$JAVA_HOME/bin:$PATH
-
-# Copy pubspec first
+# Copy pubspec first (for caching)
 COPY pubspec.* ./
 RUN flutter pub get
 
 # Copy full project
 COPY . .
 
-# Accept licenses
-RUN yes | flutter doctor --android-licenses
+# ✅ Accept licenses (no manual JAVA_HOME)
+RUN yes | sdkmanager --licenses || true
 
 # Build APK
 RUN flutter build apk --release
