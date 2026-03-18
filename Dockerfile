@@ -1,16 +1,13 @@
-FROM cirrusci/flutter:stable
+FROM cirrusci/flutter:3.24.0
 
-# Set working directory
 WORKDIR /app
 
-# Copy project files
 COPY . .
 
-# Get dependencies
+RUN flutter doctor
+
 RUN flutter pub get
 
-# Build APK
 RUN flutter build apk --release
 
-# Keep container alive (optional)
 CMD ["bash"]
