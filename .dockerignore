@@ -1,0 +1,5 @@
+build/
+.dart_tool/
+.git/
+.gitignore
+node_modules/
