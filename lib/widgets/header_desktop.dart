@@ -3,7 +3,6 @@ import 'package:my_portfolio/widgets/site_logo.dart';
 import 'animated_section.dart';
 
 import '../constants/colors.dart';
-import '../constants/nav_items.dart';
 import '../styles/style.dart';
 
 class HeaderDesktop extends StatelessWidget {
@@ -30,23 +29,56 @@ class HeaderDesktop extends StatelessWidget {
               onTap: () {},
             ),
             const Spacer(),
-            for (int i = 0; i < navTitles.length; i++)
-              Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: TextButton(
-                  onPressed: () {
-                    onNavMenuTap(i);
-                  },
-                  child: Text(
-                    navTitles[i],
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: CustomColor.whitePrimary,
-                    ),
-                  ),
+            // Login Button
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: CustomColor.soccerGreen,
+                foregroundColor: Colors.black,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
               ),
+              child: const Row(
+                children: [
+                  Text("home"),
+                  SizedBox(width: 5),
+                  Icon(Icons.chevron_right, size: 18),
+                ],
+              ),
+            ),
+            const SizedBox(width: 15),
+            // Sign Up Button
+            ElevatedButton(
+              onPressed: () {},
+              style: OutlinedButton.styleFrom(
+                backgroundColor: Colors.black.withOpacity(0.5),
+                foregroundColor: Colors.white,
+                side: const BorderSide(color: Colors.white, width: 1.5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              child: const Row(
+                children: [
+                  Text("About"),
+                  SizedBox(width: 5),
+                  Icon(Icons.chevron_right, size: 18),
+                ],
+              ),
+            ),
           ],
         ),
       ),

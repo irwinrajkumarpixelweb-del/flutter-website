@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:svg_flutter/svg_flutter.dart';
-
-import '../constants/colors.dart';
 
 class SiteLogo extends StatelessWidget {
   const SiteLogo({
@@ -13,16 +10,30 @@ class SiteLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: SvgPicture.asset("assets/logo.svg")
-      // const Text(
-      //   "IR",
-      //   style: TextStyle(
-      //     fontSize: 22,
-      //     fontWeight: FontWeight.bold,
-      //     decoration: TextDecoration.underline,
-      //     color: CustomColor.yellowSecondary,
-      //   ),
-      // ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            "MASL",
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              letterSpacing: 1.5,
+            ),
+          ),
+          Text(
+            "MAJOR ARENA SOCCER LEAGUE",
+            style: TextStyle(
+              fontSize: 8,
+              fontWeight: FontWeight.w400,
+              color: Colors.white.withOpacity(0.7),
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

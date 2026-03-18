@@ -2,16 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
-
-import '../constants/colors.dart';
-import 'animated_section.dart';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:video_player/video_player.dart';
-
-import '../constants/colors.dart';
 import 'animated_section.dart';
 
 class HomeVideoSection extends StatefulWidget {
@@ -68,9 +58,7 @@ class _HomeVideoSectionState extends State<HomeVideoSection> {
   Widget build(BuildContext context) {
     return AnimatedSection(
       child: Container(
-        height: _isFullscreen
-            ? MediaQuery.of(context).size.height
-            : 500,
+        height: _isFullscreen ? MediaQuery.of(context).size.height : 500,
         width: double.infinity,
         padding: const EdgeInsets.fromLTRB(25, 20, 25, 40),
         child: Center(
@@ -236,4 +224,3 @@ class _HomeVideoSectionState extends State<HomeVideoSection> {
     ]);
   }
 }
-

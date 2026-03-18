@@ -10,4 +10,7 @@ class CustomColor {
   static const Color yellowPrimary = Color(0xffFFAF29);
   static const Color whitePrimary = Color(0xffEAEAEB);
   static const Color whiteSecondary = Color(0xffC8C9CE);
+  static const Color soccerGreen = Color(0xff8FFF00);
+  static const Color soccerBlack = Color(0xff0A0A0A);
+  static const Color faqCyan = Color(0xff00d4ff);
 }

@@ -41,16 +41,12 @@ class _HomePageState extends State<HomePage> {
             : DrawerMobile(onNavItemTap: (int navIndex) {
                 scaffoldKey.currentState?.closeEndDrawer();
                 scrollToSection(navIndex);
-              }
-              ),
+              }),
         body: Container(
           width: screenWidth,
-          padding: const EdgeInsets.fromLTRB(25, 20, 25, 60),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           decoration: const BoxDecoration(
-              image: DecorationImage(image:ExactAssetImage('assets/splash_screen.png'),
-                fit: BoxFit.cover,
-              )
-            // border: Border.all(color: Colors.greenAccent)
+            color: Colors.black,
           ),
           child: SingleChildScrollView(
             controller: scrollController,
@@ -62,8 +58,7 @@ class _HomePageState extends State<HomePage> {
                 if (constraints.maxWidth >= kMinDesktopWidth)
                   HeaderDesktop(onNavMenuTap: (int navIndex) {
                     scrollToSection(navIndex);
-                  }
-                  )
+                  })
                 else
                   HeaderMobile(
                     onLogoTap: () {},
@@ -78,7 +73,6 @@ class _HomePageState extends State<HomePage> {
 
                 const SizedBox(height: 20),
 
-
                 // Intro video section
                 const HomeVideoSection(),
 
@@ -88,10 +82,7 @@ class _HomePageState extends State<HomePage> {
                   width: screenWidth,
                   padding: const EdgeInsets.fromLTRB(25, 20, 25, 60),
                   decoration: const BoxDecoration(
-                    image: DecorationImage(image:ExactAssetImage('assets/bluw.png'),
-                      fit: BoxFit.cover,
-                    )
-                    // border: Border.all(color: Colors.greenAccent)
+                    color: Colors.black,
                   ),
                   // color: const Color(0XFF070710),
                   child: Column(

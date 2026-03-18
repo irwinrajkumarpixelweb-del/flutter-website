@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../constants/colors.dart';
 import '../styles/style.dart';
 import 'site_logo.dart';
 import 'animated_section.dart';
@@ -25,11 +26,22 @@ class HeaderMobile extends StatelessWidget {
               onTap: onLogoTap,
             ),
             const Spacer(),
+            // Small Login Button for Mobile
+            TextButton(
+              onPressed: () {},
+              child: const Text(
+                "Login",
+                style: TextStyle(
+                  color: CustomColor.soccerGreen,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             IconButton(
               onPressed: onMenuTap,
-              icon: const Icon(Icons.menu),
+              icon: const Icon(Icons.menu, color: Colors.white),
             ),
-            const SizedBox(width: 15),
+            const SizedBox(width: 10),
           ],
         ),
       ),

@@ -20,7 +20,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 // import 'dart:html' as html;
 // import 'package:flutter/material.dart';
 // import 'package:my_portfolio/pages/home_page.dart';
