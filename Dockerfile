@@ -5,6 +5,8 @@ WORKDIR /app
 # Copy pubspec first (for caching)
 COPY pubspec.* ./
 RUN flutter pub get
+RUN flutter doctor
+RUN flutter clean
 
 # Copy full project
 COPY . .
