@@ -8,7 +8,7 @@ ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/34.0.0:$FLUTTER_HOME/bin
 
-# Install dependencies ✅ FIXED
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     curl \
     git \
@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     xz-utils \
     zip \
     libglu1-mesa \
+    libstdc++6 \
     openjdk-17-jdk \
     wget \
     clang \
@@ -48,16 +49,19 @@ RUN flutter config --no-enable-web \
                    --no-enable-windows-desktop \
                    --android-sdk $ANDROID_HOME
 
-# Bootstrap Flutter (VERY IMPORTANT)
-RUN flutter doctor -v
+# ✅ Initialize SDK (important hidden fix)
+RUN sdkmanager --list
 
-# ✅ SAFE precache (no --android)
-RUN flutter precache
-
-# Verify
+# ✅ Safe doctor
 RUN flutter doctor -v || true
 
-# App build
+# ✅ Precache
+RUN flutter precache
+
+# Verify (optional)
+RUN flutter doctor -v || true
+
+# Build app
 WORKDIR /app
 COPY . .
 
