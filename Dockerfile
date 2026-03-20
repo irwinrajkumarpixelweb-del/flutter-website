@@ -3,12 +3,12 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV ANDROID_HOME=/opt/android-sdk
 ENV ANDROID_SDK_ROOT=/opt/android-sdk
-ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/34.0.0
 ENV FLUTTER_HOME=/opt/flutter
-ENV PATH=$PATH:$FLUTTER_HOME/bin
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
-# Install dependencies
+ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/34.0.0:$FLUTTER_HOME/bin
+
+# Install dependencies ✅ FIXED
 RUN apt-get update && apt-get install -y \
     curl \
     git \
@@ -24,48 +24,44 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Android SDK command-line tools
+# Install Android SDK
 RUN mkdir -p $ANDROID_HOME/cmdline-tools && \
     wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdtools.zip && \
     unzip -q /tmp/cmdtools.zip -d $ANDROID_HOME/cmdline-tools && \
     mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest && \
     rm /tmp/cmdtools.zip
 
-# Accept licenses & install SDK packages FIRST
+# Accept licenses + install SDK
 RUN yes | sdkmanager --licenses && \
     sdkmanager \
         "platform-tools" \
         "platforms;android-34" \
-        "build-tools;34.0.0" \
-        "cmdline-tools;latest"
+        "build-tools;34.0.0"
 
 # Install Flutter
 RUN git clone https://github.com/flutter/flutter.git -b stable $FLUTTER_HOME
 
-# Configure Flutter for Android (disable other platforms)
+# Configure Flutter
 RUN flutter config --no-enable-web \
                    --no-enable-linux-desktop \
                    --no-enable-macos-desktop \
                    --no-enable-windows-desktop \
                    --android-sdk $ANDROID_HOME
 
-# ✅ FIX: Bootstrap Flutter first (downloads Dart SDK internally)
-RUN flutter --version
+# Bootstrap Flutter (VERY IMPORTANT)
+RUN flutter doctor -v
 
-# Precache Android artifacts only
-RUN flutter precache --android
+# ✅ SAFE precache (no --android)
+RUN flutter precache
 
-# Run doctor to verify setup
+# Verify
 RUN flutter doctor -v || true
 
-# Copy project
+# App build
 WORKDIR /app
 COPY . .
 
-# Get dependencies
 RUN flutter pub get
-
-# Build APK
 RUN flutter build apk --release
 
 CMD ["bash"]
