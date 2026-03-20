@@ -49,7 +49,10 @@ RUN flutter config --no-enable-web \
                    --no-enable-windows-desktop \
                    --android-sdk $ANDROID_HOME
 
-# Now precache (SDK is ready)
+# ✅ FIX: Bootstrap Flutter first (downloads Dart SDK internally)
+RUN flutter --version
+
+# Precache Android artifacts only
 RUN flutter precache --android
 
 # Run doctor to verify setup
