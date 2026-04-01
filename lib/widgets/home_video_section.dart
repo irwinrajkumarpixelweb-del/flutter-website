@@ -7,7 +7,7 @@ import 'animated_section.dart';
 class HomeVideoSection extends StatefulWidget {
   const HomeVideoSection({
     super.key,
-    this.url = 'assets/videos/fantacy_football.mp4',
+    this.url = 'assets/videos/fantacy_football_update.mp4',
     this.autoplay = false,
     this.loop = true,
   });
